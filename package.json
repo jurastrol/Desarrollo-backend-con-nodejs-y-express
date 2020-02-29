@@ -4,12 +4,24 @@
   "description": "Introducción a nodejs",
   "main": "src/index.js",
   "scripts": {
-    "start" : "node src/index.js",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Juan Luis Rastrollo",
   "license": "MIT",
   "dependencies": {
-    "countries-list": "^2.5.1"
+    "bcrypt": "^4.0.0",
+    "body-parser": "^1.19.0",
+    "countries-list": "^2.5.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.2"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1",
+    "nodemon": "^2.0.2"
   }
 }

@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const Users = require('../../mongo/models/users');
+const Products = require('../../mongo/models/products');
+
 const jwt = require('jsonwebtoken');
 
 const expiresIn = 60 * 10;
@@ -12,7 +14,7 @@ const login = async (req, res) => {
       const isOK = await bcrypt.compare(password, user.password);
       if (isOK) {
         const token = jwt.sign(
-          { userId: user._id, permission: user.role },
+          { userId: user._id, role: user.role },
           process.env.JWT_SECRET,
           { expiresIn }
         );
@@ -62,18 +64,39 @@ const createUser = async (req, res) => {
   }
 };
 
-const deleteUser = (req, res) => {
-  res.send({ status: 'OK', message: 'user deleted' });
+const deleteUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      throw new Error('Mising param userId.');
+    }
+    console.log('userid ', userId);
+    await Users.findByIdAndDelete(userId);
+    await Products.deleteMany({ user: userId });
+    res.send({ status: 'OK', message: 'user deleted' });
+  } catch (error) {
+    res.status(500).send({ status: 'ERROR', message: error.message });
+  }
 };
 
-const getUsers = (req, res) => {
-  res.send({ status: 'OK', data: [] });
+const getUsers = async (req, res) => {
+  try {
+    const users = await Users.find().select({ password: 0, __v: 0, role: 0 });
+    res.send({ status: 'OK', data: users });
+  } catch (e) {
+    res.status(500).send({ status: 'ERROR', message: e.message });
+  }
 };
 
 const updateUser = async (req, res) => {
   try {
-    const { username, email, data, userId } = req.body;
-    await Users.findByIdAndUpdate(userId, { username, email, data });
+    console.log('req.sessionData', req.sessionData.userId);
+    const { username, email, data } = req.body;
+    await Users.findByIdAndUpdate(req.sessionData.userId, {
+      username,
+      email,
+      data
+    });
     res.send({ status: 'OK', message: 'user updated' });
   } catch (error) {
     if (error.code && error.code === 11000) {

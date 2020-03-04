@@ -1,6 +1,8 @@
-const Products = require('../../mongo/models/products');
+import {Request, Response} from 'express';
 
-const createProduct = async (req, res) => {
+import Products from '../../mongo/models/products';
+
+const createProduct = async (req:Request, res:Response): Promise<void> => {
   try {
     const { title, desc, price, images, userId } = req.body;
 
@@ -18,9 +20,7 @@ const createProduct = async (req, res) => {
   }
 };
 
-const deleteProduct = (req, res) => {};
-
-const getProducts = async (req, res) => {
+const getProducts = async (req:Request, res:Response): Promise<void>=> {
   try {
     const products = await Products.find({
       price: { $lt: 10 }
@@ -34,7 +34,7 @@ const getProducts = async (req, res) => {
   }
 };
 
-const getProductsByuser = async (req, res) => {
+const getProductsByuser = async (req:Request, res:Response): Promise<void> => {
   try {
     const products = await Products.find({
       user: req.params.userId
@@ -46,9 +46,8 @@ const getProductsByuser = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   createProduct,
-  deleteProduct,
   getProducts,
   getProductsByuser
 };

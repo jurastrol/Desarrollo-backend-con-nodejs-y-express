@@ -1,6 +1,6 @@
-const express = require('express');
-const { isAuth, isValidHostname, isAdmin } = require('../../middlewares/auth');
-const usersController = require('../../controllers/v1/users-controller');
+import express from 'express';
+import { isAuth, isValidHostname, isAdmin } from '../../middlewares/auth';
+import usersController from '../../controllers/v1/users-controller';
 
 const router = express.Router();
 
@@ -10,4 +10,4 @@ router.post('/update', isValidHostname, isAuth, usersController.updateUser);
 router.post('/delete', isAuth, isAdmin, usersController.deleteUser);
 router.get('/get-all', isAuth, isAdmin, usersController.getUsers);
 
-module.exports = router;
+export default router;

@@ -1,13 +1,20 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const dotenv = require('dotenv');
+import express, { Application} from 'express';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
+import routesV1 from './routes/v1';
 
 dotenv.config();
 
-const routesV1 = require('./routes/v1');
+declare global{
+  namespace Express{
+    export interface Request{
+      sessionData:any;
+    }
+  }
+}
 
-const app = express();
+const app: Application = express();
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -16,10 +23,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 routesV1(app);
-const PORT = process.env.PORT || 4000;
-console.log(process.env.MONGO);
+
+const PORT: number | string = process.env.PORT || 4000;
+
 mongoose
-  .connect(process.env.MONGO, {
+  .connect(process.env.MONGO!, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
